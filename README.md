@@ -19,6 +19,8 @@ To authenticate existing users, switch to the "Authenticate" tab (on the left). 
 #### Modify
 Not yet implemented.
 
+*Note*: It is recommended to use a server to view the application rather than opening the index.html file in your browser. A simple option is the **http-server** npm package. Simply install it with `npm install http-server -g` and navigate to the root of this repo (i.e. the folder containing the *public* folder) and on your terminal enter `http-server`. You can then navigate to **localhost:8080** to view the application.
+
 ### Development
 #### Components
 The application is made up of a single **index.html** file and styled with an accompanying **styles.css** file. It heavily relies on [Bootstrap](https://getbootstrap.com/) for layout and overall UI.
