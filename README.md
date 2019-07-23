@@ -25,7 +25,7 @@ The application is made up of a single **index.html** file and styled with an ac
 
 For the actual face detection, recognition and landmark detection, the library uses [face-api.js](https://github.com/justadudewhohacks/face-api.js). face-api.js provides a number of choices for models and you can learn about using them on its GitHub page. A few pointers to ease your usage and avoid common pitfalls:
 
-1. Load the models before you use them (see [Loading the Models](https://github.com/justadudewhohacks/face-api.js#getting-started-loading-models)
+1. Load the models before you use them (see [Loading the Models](https://github.com/justadudewhohacks/face-api.js#getting-started-loading-models))
 2. To use models other than default ones, provide the respective *options* object as a parameter to the *detectSingleFace()* or *detectAllFaces()* methods. You can read about it in more detail on the face-api.js GitHub page.
 
 The storage is implemented in the browser with [PouchDB](https://pouchdb.com/) and only implements in-browser storage. You are free to extend it to interact with your own server.
