@@ -1,0 +1,78 @@
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.divider {
+    width: 100%;
+    background-color: #A9A9A9;
+    height: 1px;
+    margin: 20px 0;
+}
+
+#enrollmentVideo, #authenticationVideo {
+    margin-top: 20px;
+    width: 400px;
+    height: 300px;
+    border: none;
+    border-radius: 50px;
+}
+
+.menu {
+    background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+}
+
+.main-content {
+    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+    vertical-align: middle;
+    text-align: center;
+}
+
+.list-group-item {
+    color: #007bff;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: white;
+    border-radius: 100px !important;
+    text-align: center;
+}
+
+.tab-pane {
+    max-width: 400px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+input[type="text"] {
+    font-family: 'Quicksand', sans-serif;
+    border: none;
+    border-radius: 100px;
+    padding: 20px 20px;
+}
+
+#captureButton {
+    width: auto;
+    padding: 10px 30px;
+}
+
+.btn {
+    color: #fff;
+    width: 100%;
+    border: none;
+    border-radius: 100px;
+    padding: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-title {
+    width: 100%;
+    text-align: left;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
