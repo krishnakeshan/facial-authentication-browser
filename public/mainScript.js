@@ -6,6 +6,7 @@ var currentDescriptors = []
 
 async function run() {
     //load models
+    console.log("running run")
     await faceapi.nets.ssdMobilenetv1.loadFromUri("./models")
     await faceapi.nets.faceLandmark68Net.loadFromUri("./models")
     await faceapi.nets.faceRecognitionNet.loadFromUri("./models")
@@ -135,5 +136,14 @@ async function authenticate() {
         //show message
         authButton.innerText = "Welcome " + bestMatch._label
         authButton.removeAttribute("disabled")
+
+        //detect all faces
+        // const multipleDetections = await faceapi.detectAllFaces(videoElement).withFaceLandmarks().withFaceDescriptors()
+
+        // //recognise
+        // multipleDetections.forEach(fd => {
+        //     const bestMatch = faceMatcher.findBestMatch(fd.descriptor)
+        //     console.log(bestMatch)
+        // })
     })
 }
