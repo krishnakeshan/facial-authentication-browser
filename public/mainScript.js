@@ -6,7 +6,6 @@ var currentDescriptors = []
 
 async function run() {
     //load models
-    console.log("running run")
     await faceapi.nets.ssdMobilenetv1.loadFromUri("./models")
     await faceapi.nets.faceLandmark68Net.loadFromUri("./models")
     await faceapi.nets.faceRecognitionNet.loadFromUri("./models")
@@ -72,14 +71,17 @@ async function enroll() {
     const name = nameInput.value;
 
     //add this entry to database
-    const db = new PouchDB("face-data")
-    const newEntry = {
-        _id: usn,
-        name: name,
-        descriptors: currentDescriptors,
-    }
-    db.put(newEntry, function callback(err, res) {
-        if (!err) {
+    $.ajax({
+        type: "POST",
+        url: "enroll",
+        data: {
+            id: usn,
+            name: name,
+            descriptors0: currentDescriptors[0].join(' '),
+            descriptors1: currentDescriptors[1].join(' '),
+            descriptors2: currentDescriptors[2].join(' ')
+        },
+        success: (data, status, jqXHR) => {
             //empty the array
             currentDescriptors = []
 
@@ -94,7 +96,7 @@ async function enroll() {
 
             //do something to show success
             console.log("added to db")
-        }
+        },
     })
 }
 
@@ -104,46 +106,48 @@ async function authenticate() {
     authButton.setAttribute("disabled", true)
 
     //get reference to video element
-    console.log("authenticating user")
     const videoElement = document.getElementById("authenticationVideo")
 
     //get face descriptor
     const inputDetection = await faceapi.detectSingleFace(videoElement).withFaceLandmarks().withFaceDescriptor()
     const inputDescriptor = inputDetection.descriptor
-    console.log("got input descriptor")
 
-    //get data
-    const db = new PouchDB("face-data")
-    db.allDocs({ include_docs: true }, function callback(err, docs) {
-        //got data, create LabeledFaceDescriptors
-        console.log("got all docs")
-        var labeledFaceDescriptors = []
-        for (var i = 0; i < docs.rows.length; i++) {
-            labeledFaceDescriptors.push(new faceapi.LabeledFaceDescriptors(
-                docs.rows[i].doc.name,
-                docs.rows[i].doc.descriptors,
-            ));
+    //get face data
+    $.ajax({
+        type: "POST",
+        url: "getFaceData",
+        success: (data, status, jqXHR) => {
+            // parse retrieved data
+            face_data_objects = JSON.parse(data)
+
+            // convert descriptor data from string to float
+            for (var i = 0; i < face_data_objects.length; i++) {
+                descriptors = new Float32Array(face_data_objects[i]["descriptors"].split("+"))
+                descriptor1 = descriptors.slice(0, 128)
+                descriptor2 = descriptors.slice(128, 256)
+                descriptor3 = descriptors.slice(256, 384)
+                face_data_objects[i]["descriptors"] = [descriptor1, descriptor2, descriptor3]
+            }
+
+            var labeledFaceDescriptors = []
+            for (var i = 0; i < face_data_objects.length; i++) {
+                labeledFaceDescriptors.push(new faceapi.LabeledFaceDescriptors(
+                    face_data_objects[i]["name"],
+                    face_data_objects[i]["descriptors"],
+                ));
+            }
+
+            //create facematcher with those
+            console.log("created labeled descriptors")
+            const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors)
+
+            //find best match
+            const bestMatch = faceMatcher.findBestMatch(inputDescriptor)
+            console.log(bestMatch)
+
+            //show message
+            authButton.innerText = "Welcome " + bestMatch._label
+            authButton.removeAttribute("disabled")
         }
-
-        //create facematcher with those
-        console.log("created labeled descriptors")
-        const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors)
-
-        //find best match
-        const bestMatch = faceMatcher.findBestMatch(inputDescriptor)
-        console.log(bestMatch)
-
-        //show message
-        authButton.innerText = "Welcome " + bestMatch._label
-        authButton.removeAttribute("disabled")
-
-        //detect all faces
-        // const multipleDetections = await faceapi.detectAllFaces(videoElement).withFaceLandmarks().withFaceDescriptors()
-
-        // //recognise
-        // multipleDetections.forEach(fd => {
-        //     const bestMatch = faceMatcher.findBestMatch(fd.descriptor)
-        //     console.log(bestMatch)
-        // })
     })
 }
